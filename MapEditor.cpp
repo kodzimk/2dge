@@ -2,11 +2,12 @@
 
 MapEditor::MapEditor()
 {
+	this->font.loadFromFile("res/Dosis-Light.ttf");
 	this->tileMap = new TileMap();
 
-	this->backgroundShape.setFillColor(sf::Color(100,100, 100, 200));
-	this->backgroundShape.setSize(sf::Vector2f(1600.f, 384.f));
-	this->backgroundShape.setPosition(175.f, 700.f);
+    this->backgroundShape.setFillColor(sf::Color(100,100, 100, 200));
+	this->backgroundShape.setSize(sf::Vector2f(1920.f, 384.f));
+	this->backgroundShape.setPosition(0, 700.f);
 	this->showFirst = true;
 	this->selectedTile = nullptr;
 }
@@ -23,7 +24,10 @@ void MapEditor::render(sf::RenderWindow* window)
 
 	this->tileMap->render(window,this->showFirst);
 	if (this->selectedTile != nullptr)
-		this->selectedTile->render(window);
+	{
+	   this->selectedTile->render(window);
+ 	   this->prop->render(window);
+	}
 }
 
 void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isCan)
@@ -42,7 +46,6 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 			int x = static_cast<int>(mousePosView.x/64);
 			int y = static_cast<int>(mousePosView.y / 64);
 			this->tileMap->tiles[this->tileMap->tiles.size() - 1]->tile.setPosition(x*64,y*64);
-			this->selectedTile = nullptr;
 		}
 	}
 
@@ -75,6 +78,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 		{
 			if (this->tileMap->selectSprite[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				this->selectedTile = new Tile(this->tileMap->selectSprite[i]);
+				this->prop = new TileProp(this->selectedTile->collision,this->selectedTile->type,this->selectedTile->tile.getPosition(),"niger",this->font);
 			}
 		}
 	}
@@ -84,12 +88,14 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 		{
 			if (this->tileMap->selectSprite2[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
 				this->selectedTile = new Tile(this->tileMap->selectSprite2[i]);
+				this->prop = new TileProp(this->selectedTile->collision, this->selectedTile->type, this->selectedTile->tile.getPosition(), "niger",this->font);
 			}
 		}
 	}
 
 	if (this->selectedTile != nullptr)
 	{
+	
 		this->selectedTile->tile.setPosition(mousePosView);
 	}
 }

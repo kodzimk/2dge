@@ -3,11 +3,14 @@
 
 #include"includer.h"
 #include"TileMap.h"
+#include"TileProp.h"
 
 
 class MapEditor
 {
 public:
+	sf::Font font;
+	TileProp* prop;
 	TileMap* tileMap;
 	sf::RectangleShape backgroundShape;
 	bool showFirst;
