@@ -46,6 +46,9 @@
     <ClCompile Include="TileProp.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="GameObjects.cpp">
+      <Filter>GUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -67,6 +70,9 @@
       <Filter>GameEngine\editor</Filter>
     </ClInclude>
     <ClInclude Include="TileProp.h">
+      <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObjects.h">
       <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>

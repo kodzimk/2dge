@@ -3,6 +3,8 @@
 #include<vector>
 #include<string>
 #include<math.h>
+#include<fstream>
+
 
 #include<SFML/Graphics.hpp>
 #include<SFML/Audio.hpp>

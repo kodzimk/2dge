@@ -4,7 +4,7 @@
 #include"includer.h"
 #include"TileMap.h"
 #include"TileProp.h"
-
+#include"GameObjects.h"
 
 class MapEditor
 {
@@ -17,6 +17,7 @@ public:
 	Tile* selectedTile;
 	int objectCount;
 	std::vector<TileProp*> props;
+	GameObjects* objectLists;
 
 
 	MapEditor();

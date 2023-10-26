@@ -8,6 +8,7 @@ GameEngine::GameEngine()
 	this->keytime = 0.f;
 	this->keytimeMax = 10.f;
 	this->mousePosView = sf::Vector2f();
+	this->path = "game.txt";
 }
 
 GameEngine::~GameEngine()
@@ -18,15 +19,32 @@ GameEngine::~GameEngine()
 void GameEngine::render()
 {
 	window->clear();
-	this->mapEditor->render(window);
+	if (this->game == nullptr)
+		this->mapEditor->render(window);
+	else
+		this->game->render(window);
 	window->display();
 }
 
 void GameEngine::update()
 {
-	this->updateKeyTime();
-	this->mousePosView = sf::Vector2f(sf::Mouse::getPosition(*window));
-	this->mapEditor->update(1.f,this->mousePosView,this->getKeyTime());
+	if (this->game == nullptr)
+	{
+		this->updateKeyTime();
+		this->mousePosView = sf::Vector2f(sf::Mouse::getPosition(*window));
+		this->mapEditor->update(1.f, this->mousePosView, this->getKeyTime());
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+		{
+			this->mapEditor->tileMap->savetoFile(path);
+
+			 
+			this->game = new GameApp(path);
+		}
+	}
+	else
+	{
+		this->game->update();
+	}
 }
 
 void GameEngine::updateKeyTime()
