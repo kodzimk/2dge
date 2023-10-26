@@ -3,7 +3,6 @@
 TileMap::TileMap()
 {
 	this->tileSheet1.loadFromFile("res/Textures/TILESHEET1.png");
-	//this->tiles.resize(100); 
 	
     sf::Sprite sprite;
 	for (size_t i = 0; i < 6; i++)
@@ -28,13 +27,6 @@ TileMap::TileMap()
 			sprite.setPosition(j* 64 + 600.f, (i - 6) * 64 + 700.f);
 			this->selectSprite2.push_back(sprite);
 		}
-	}
-	
-	this->tiles.resize(100);
-	for (int i = 0; i < this->tiles.size(); i++)
-	{
-	
-		this->tiles[i] = new Tile(sf::Sprite());
 	}
 }
 
@@ -90,7 +82,7 @@ void TileMap::savetoFile(std::string path)
 
 		for (size_t i = 0; i < this->tiles.size(); i++)
 		{
-			file <<this->tiles[i]->tile.getGlobalBounds().left<<" " << this->tiles[i]->tile.getGlobalBounds().top << " " << 
+			    file << this->tiles[i]->tile.getGlobalBounds().left<<" " << this->tiles[i]->tile.getGlobalBounds().top << " " << 
 				this->tiles[i]->tile.getGlobalBounds().width << " "<<
 				this->tiles[i]->tile.getGlobalBounds().height << " "<<
 				this->tiles[i]->tile.getPosition().x << " " << this->tiles[i]->tile.getPosition().y << " " <<
@@ -109,6 +101,7 @@ void TileMap::savetoFile(std::string path)
 void TileMap::loadFromFile(const std::string path)
 {
 	std::ifstream file;
+
 	file.open(path);
 
 
@@ -124,7 +117,7 @@ void TileMap::loadFromFile(const std::string path)
 		bool collision = false;
 		file >> size;
 
-		if (!this->tiles.empty())
+		/*if (!this->tiles.empty())
 		{
 			for (int i = 0; i < this->tiles.size(); i++)
 			{
@@ -132,10 +125,14 @@ void TileMap::loadFromFile(const std::string path)
 					delete this->tiles[i];
 			}
 			this->tiles.clear();
-		}
+		}*/
 
 		this->tiles.resize(size);
-	
+
+		for (size_t i = 0; i < size; i++)
+		{
+			this->tiles[i] = NULL;
+		}
          
 
 		for (int i = 0; i < size; i++)

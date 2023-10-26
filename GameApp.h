@@ -7,12 +7,13 @@
 class GameApp
 {
 public:
+	sf::RenderWindow* window;
 	TileMap* map;
 
 	GameApp(std::string name);
 	~GameApp();
 
-	void render(sf::RenderWindow* window);
+	void render();
 	void update();
 };
 #endif // !GAMEAPP_H

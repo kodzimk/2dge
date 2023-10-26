@@ -19,10 +19,7 @@ GameEngine::~GameEngine()
 void GameEngine::render()
 {
 	window->clear();
-	if (this->game == nullptr)
-		this->mapEditor->render(window);
-	else
-		this->game->render(window);
+	this->mapEditor->render(window);
 	window->display();
 }
 
@@ -36,9 +33,9 @@ void GameEngine::update()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
 		{
 			this->mapEditor->tileMap->savetoFile(path);
-
-			 
+			window->close();
 			this->game = new GameApp(path);
+			
 		}
 	}
 	else
