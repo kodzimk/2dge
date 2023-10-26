@@ -32,6 +32,7 @@ void GameEngine::update()
 void GameEngine::updateKeyTime()
 {
 	this->dt = this->clock.restart().asSeconds();
+
 	if (this->keytime < this->keytimeMax)
 		this->keytime += 100.f * this->dt;
 }

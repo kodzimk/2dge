@@ -15,6 +15,8 @@ public:
 	sf::RectangleShape backgroundShape;
 	bool showFirst;
 	Tile* selectedTile;
+	int objectCount;
+	std::vector<TileProp*> props;
 
 
 	MapEditor();
