@@ -12,6 +12,7 @@ public:
 	sf::Texture tileSheet1;
 	std::vector<sf::Sprite>selectSprite;
 	std::vector<sf::Sprite>selectSprite2;
+	std::vector<Tile*> upTiles;
 	sf::Sprite sp;
 	
 
@@ -20,8 +21,8 @@ public:
 
 	void update(const float& dt);
 	void render(sf::RenderWindow* window,bool showFirst,bool showTextures);
-	void savetoFile(std::string name);
-	void loadFromFile(const std::string name);
+	void savetoFile(std::string name, std::string path2);
+	void loadFromFile(const std::string name, std::string path2);
 	void renderGame(sf::RenderWindow* window);
 };
 

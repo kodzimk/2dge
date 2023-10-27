@@ -4,7 +4,7 @@ GameApp::GameApp()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Havoc");
 	this->map = new TileMap();
-	this->map->loadFromFile("game.txt");
+	this->map->loadFromFile("game.txt","upTile.txt");
 }
 
 GameApp::~GameApp()

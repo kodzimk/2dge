@@ -37,7 +37,7 @@ MapEditor::MapEditor()
 	this->playerSelect.setCharacterSize(30);
 	this->playerSelect.setString("Others");
 
-	this->tileMap->loadFromFile("game.txt");
+	this->tileMap->loadFromFile("game.txt","upTile.txt");
 	this->showTiles = true;
 	this->showSprites = false;
 }
@@ -115,52 +115,82 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 			if (x1 == x && y1 == y)
 			{
 				this->prop = this->props[i];
-				return;
+	
 			}
 		}
 	}
 
 	if (this->selectedTile != nullptr)
 	{
-		if (mousePosView.y < 680.f &&mousePosView.x < 1520.f && mousePosView.x > 400.f && 
-			sf::Mouse::isButtonPressed(sf::Mouse::Left) && isCan&&!this->saveGameText.getGlobalBounds().contains(mousePosView))
+		if (mousePosView.y < 680.f && mousePosView.x < 1520.f && mousePosView.x > 400.f &&
+			sf::Mouse::isButtonPressed(sf::Mouse::Left) && isCan && !this->saveGameText.getGlobalBounds().contains(mousePosView))
 		{
 			
-			int x = static_cast<int>(mousePosView.x/64);
+			int x = static_cast<int>(mousePosView.x / 64);
 			int y = static_cast<int>(mousePosView.y / 64);
-			for (size_t i = 0; i < this->tileMap->tiles.size(); i++)
+
+			if (this->selectedTile->tile.getTextureRect() != sf::IntRect(128, 256, 64, 64) && this->selectedTile->tile.getTextureRect() != sf::IntRect(192,256,64,64)&&
+				this->selectedTile->tile.getTextureRect() != sf::IntRect(512, 576, 64, 64)&&this->selectedTile->tile.getTextureRect() != sf::IntRect(512, 640, 64, 64)&&
+				this->selectedTile->tile.getTextureRect() != sf::IntRect(512, 704, 64, 64)&& this->selectedTile->tile.getTextureRect() != sf::IntRect(576, 576, 64, 64)&&
+				this->selectedTile->tile.getTextureRect() != sf::IntRect(576, 640, 64, 64)&& this->selectedTile->tile.getTextureRect() != sf::IntRect(576, 704, 64, 64) 
+				 && this->selectedTile->tile.getTextureRect() != sf::IntRect(640, 576, 64, 64) &&
+				this->selectedTile->tile.getTextureRect() != sf::IntRect(640, 640, 64, 64) && this->selectedTile->tile.getTextureRect() != sf::IntRect(640, 704, 64, 64))
 			{
-				int x1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().x / 64);
-				int y1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().y / 64);
-				if (x1 == x && y1 == y)
+				for (size_t i = 0; i < this->tileMap->tiles.size(); i++)
 				{
-					this->prop = this->props[i];
-					return;
-				}
+					int x1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().x / 64);
+					int y1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().y / 64);
+					if (x1 == x && y1 == y)
+					{
+						this->prop = this->props[i];
+						return;
+					}
+				} 
+
+				this->tileMap->tiles.push_back(new Tile(*this->selectedTile));
+				this->tileMap->tiles[this->tileMap->tiles.size() - 1]->tile.setPosition(x * 64, y * 64);
 			}
-			this->tileMap->tiles.push_back(new Tile(*this->selectedTile));
-			this->tileMap->tiles[this->tileMap->tiles.size() - 1]->tile.setPosition(x*64,y*64);
+			else
+			{
+				this->tileMap->upTiles.push_back(new Tile(*this->selectedTile));
+				this->tileMap->upTiles[this->tileMap->upTiles.size() - 1]->tile.setPosition(x * 64, y * 64);
+			}
+
 			this->prop = new TileProp(this->selectedTile->collision, this->selectedTile->type, this->selectedTile->tile.getPosition(), "Object:" + std::to_string(objectCount));
 			props.push_back(this->prop);
 			sf::Text text;
-			
+
 			text.setFont(this->font);
 			text.setFillColor(sf::Color(255, 255, 255, 255));
-			text.setPosition(50,25 * (objectCount +1));
+			text.setPosition(50, 25 * (objectCount + 1));
 			text.setCharacterSize(20);
 			text.setString("Object: " + std::to_string(objectCount));
 
 			this->objectLists->namesofobjects.push_back(text);
 			objectCount++;
-	    }
+		}
 	}
+	
 
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)&&isCan)
 	{
 		int index = 0;
 		int x = static_cast<int>(mousePosView.x / 64);
 		int y = static_cast<int>(mousePosView.y / 64);
+		for (auto i = this->tileMap->upTiles.begin(); i !=this->tileMap->upTiles.end(); i++)
+		{
+			if ((*i) != nullptr) {
+				int x1 = static_cast<int>((*i)->tile.getPosition().x / 64);
+				int y1 = static_cast<int>((*i)->tile.getPosition().y / 64);
+				if (x1 == x && y1 == y)
+				{
+					this->tileMap->upTiles.erase(i);
+					objectCount--;
+					return;
+				}
+			}
+		}
 		for (auto i = this->tileMap->tiles.begin();i != this->tileMap->tiles.end();i++,index++)
 		{
 			if ((*i) != nullptr)
@@ -354,7 +384,7 @@ void MapEditor::updateTextInputs(bool isCan, sf::Vector2f mousePosView)
 {
 	if (this->saveGameText.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
-		this->tileMap->savetoFile("game.txt");
+		this->tileMap->savetoFile("game.txt","upTile.txt");
 		this->saveToFile("project.txt", "objects.txt");
 	}
 	if (this->playerSelect.getGlobalBounds().contains(mousePosView) && isCan&&sf::Mouse::isButtonPressed(sf::Mouse::Left))

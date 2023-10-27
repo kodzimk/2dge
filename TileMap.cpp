@@ -36,6 +36,10 @@ TileMap::~TileMap()
 	{
 		    delete this->tiles[i];
 	}
+	for (int i = 0; i < upTiles.size(); i++)
+	{
+		delete this->upTiles[i];
+	}
 }
 
 void TileMap::update(const float& dt)
@@ -50,6 +54,13 @@ void TileMap::render(sf::RenderWindow* window,bool showFirst, bool showTextures)
 			{
 				this->tiles[i]->render(window);
 			}
+	}
+	for (size_t i = 0; i < this->upTiles.size(); i++)
+	{
+		if (this->upTiles[i] != nullptr)
+		{
+			this->upTiles[i]->render(window);
+		}
 	}
 
 	if (showTextures)
@@ -80,7 +91,7 @@ std::string btos(bool x)
 	return "0";
 }
 
-void TileMap::savetoFile(std::string path)
+void TileMap::savetoFile(std::string path,std::string path2)
 {
 	std::ofstream file;
 	file.open(path);
@@ -109,9 +120,30 @@ void TileMap::savetoFile(std::string path)
 	}
 
 	file.close();
+
+	file.open(path2);
+
+	if (file.is_open())
+	{
+		file << this->upTiles.size() << "\n";
+
+		for (size_t i = 0; i < this->upTiles.size(); i++)
+		{
+			if (this->upTiles[i] != nullptr)
+			{
+				std::string left = std::to_string(this->upTiles[i]->tile.getTextureRect().left);
+				std::string top = std::to_string(this->upTiles[i]->tile.getTextureRect().top);
+				std::string collision = btos(this->upTiles[i]->collision);
+
+				file << this->upTiles[i]->tile.getPosition().x << " " << this->upTiles[i]->tile.getPosition().y << " " << left << " " << top << " " << collision << " ";
+			}
+
+		}
+	}
+	file.close();
 }
 
-void TileMap::loadFromFile(const std::string path)
+void TileMap::loadFromFile(const std::string path, std::string path2)
 {
 	std::ifstream file;
 
@@ -124,8 +156,6 @@ void TileMap::loadFromFile(const std::string path)
 		int size = 0;
 		int left = 0;
 		int top = 0;
-		int width = 0;
-		int height = 0;
 		float x, y;
 		bool collision = false;
 		file >> size;
@@ -163,6 +193,47 @@ void TileMap::loadFromFile(const std::string path)
 		std::cout << "kakakkakakakak" << std::endl;
 	}
 
+	file.close();
+
+	file.open(path2);
+
+	if (file.is_open())
+	{
+		int size = 0;
+		int left = 0;
+		int top = 0;
+		float x, y;
+		bool collision = false;
+		file >> size;
+
+		if (!this->upTiles.empty())
+		{
+			for (int i = 0; i < this->upTiles.size(); i++)
+			{
+				if (this->tiles[i] != nullptr)
+					delete this->upTiles[i];
+			}
+			this->upTiles.clear();
+		}
+
+
+		this->upTiles.resize(size, new Tile());
+
+		for (size_t i = 0; i < size; i++)
+		{
+			this->upTiles[i] = new Tile();
+		}
+
+		int i = 0;
+		while (file >> x >> y >> left >> top >> collision)
+		{
+			this->upTiles[i]->tile.setTexture(this->tileSheet1);
+			this->upTiles[i]->tile.setTextureRect(sf::IntRect(left, top, 64, 64));
+			this->upTiles[i]->tile.setPosition(x, y);
+			this->upTiles[i]->collision = collision;
+			i++;
+		}
+	}
 	file.close();
 }
 
