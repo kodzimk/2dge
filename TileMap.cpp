@@ -42,7 +42,7 @@ void TileMap::update(const float& dt)
 {
 }
 
-void TileMap::render(sf::RenderWindow* window,bool showFirst)
+void TileMap::render(sf::RenderWindow* window,bool showFirst, bool showTextures)
 {
 	for (int i = 0; i < this->tiles.size(); i++)
 	{
@@ -52,20 +52,23 @@ void TileMap::render(sf::RenderWindow* window,bool showFirst)
 			}
 	}
 
-	if (showFirst)
+	if (showTextures)
 	{
-		for (int i = 0; i < this->selectSprite.size(); i++)
+		if (showFirst)
 		{
-			window->draw(this->selectSprite[i]);
+			for (int i = 0; i < this->selectSprite.size(); i++)
+			{
+				window->draw(this->selectSprite[i]);
 
+			}
 		}
-	}
-	else
-	{
-
-		for (int i = 0; i < this->selectSprite2.size(); i++)
+		else
 		{
-			window->draw(this->selectSprite2[i]);
+
+			for (int i = 0; i < this->selectSprite2.size(); i++)
+			{
+				window->draw(this->selectSprite2[i]);
+			}
 		}
 	}
 }

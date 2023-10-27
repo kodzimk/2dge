@@ -25,8 +25,21 @@ MapEditor::MapEditor()
 	this->saveGameText.setCharacterSize(40);
 	this->saveGameText.setString("Save");
 
-	this->tileMap->loadFromFile("game.txt");
+	this->tilesSelect.setFont(this->font);
+	this->tilesSelect.setFillColor(sf::Color::White);
+	this->tilesSelect.setPosition(420.f, 700.f);
+	this->tilesSelect.setCharacterSize(30);
+	this->tilesSelect.setString("Tiles");
 
+	this->playerSelect.setFont(this->font);
+	this->playerSelect.setFillColor(sf::Color::White);
+	this->playerSelect.setPosition(500.f, 700.f);
+	this->playerSelect.setCharacterSize(30);
+	this->playerSelect.setString("Others");
+
+	this->tileMap->loadFromFile("game.txt");
+	this->showTiles = true;
+	this->showSprites = false;
 }
 
 MapEditor::~MapEditor()
@@ -40,8 +53,15 @@ void MapEditor::render(sf::RenderWindow* window)
 	window->draw(this->backgroundShape);
 	window->draw(this->playText);
 	window->draw(this->saveGameText);
+	
+	
+	
+		this->tileMap->render(window, this->showFirst,this->showTiles);
+	
+	if (this->showSprites)
+	{
 
-	this->tileMap->render(window,this->showFirst);
+	}
 
 	if (this->selectedTile != nullptr)
 	{
@@ -53,12 +73,16 @@ void MapEditor::render(sf::RenderWindow* window)
 
 	if (this->props.size() > 0)
 		this->objectLists->render(window);
+
+	window->draw(this->tilesSelect);
+	window->draw(this->playerSelect);
 }
 
 void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isCan)
 {
 	this->tileMap->update(dt);
 	this->updateInputs(mousePosView,isCan);
+	this->updateTextInputs(isCan, mousePosView);
 
 	if (this->props.size() > 0)
 	{
@@ -72,12 +96,6 @@ void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isC
 
 void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 {
-	if (this->saveGameText.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
-	{
-		this->tileMap->savetoFile("game.txt");
-		this->saveToFile("project.txt","objects.txt");
-	}
-
 	if (this->prop != nullptr)
 	{
 		this->prop->update(isCan, mousePosView);
@@ -86,7 +104,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Tab))
 		this->selectedTile = nullptr;
 
-	/*if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Left))
 	{
 		int x = static_cast<int>(mousePosView.x / 64);
 		int y = static_cast<int>(mousePosView.y / 64);
@@ -100,7 +118,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 				return;
 			}
 		}
-	}*/
+	}
 
 	if (this->selectedTile != nullptr)
 	{
@@ -330,4 +348,23 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 		}
 	}
 	file_name.close();
+}
+
+void MapEditor::updateTextInputs(bool isCan, sf::Vector2f mousePosView)
+{
+	if (this->saveGameText.getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->tileMap->savetoFile("game.txt");
+		this->saveToFile("project.txt", "objects.txt");
+	}
+	if (this->playerSelect.getGlobalBounds().contains(mousePosView) && isCan&&sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->showTiles = false;
+		this->showSprites = true;
+	}
+	if (this->tilesSelect.getGlobalBounds().contains(mousePosView) && isCan && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		this->showTiles = true;
+		this->showSprites = false;
+	}
 }

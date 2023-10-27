@@ -20,6 +20,9 @@ public:
 	GameObjects* objectLists;
 	sf::Text playText;
 	sf::Text saveGameText;
+	sf::Text tilesSelect;
+	sf::Text playerSelect;
+	bool showTiles, showSprites;
 
 	MapEditor();
 	~MapEditor();
@@ -30,5 +33,6 @@ public:
 	bool startPlay(sf::Vector2f mouse);
 	void saveToFile(const std::string file, const std::string file2);
 	void loadFromFile(const std::string file, const std::string file2);
+	void updateTextInputs(bool isCan, sf::Vector2f mousePosView);
 };
 #endif
