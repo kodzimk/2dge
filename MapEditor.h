@@ -19,7 +19,7 @@ public:
 	std::vector<TileProp*> props;
 	GameObjects* objectLists;
 	sf::Text playText;
-
+	sf::Text saveGameText;
 
 	MapEditor();
 	~MapEditor();
@@ -28,5 +28,7 @@ public:
 	void update(const float& dt, const sf::Vector2f mousePosView,bool isCan);
 	void updateInputs(const sf::Vector2f mousePosView,bool isCan);
 	bool startPlay(sf::Vector2f mouse);
+	void saveToFile(const std::string file, const std::string file2);
+	void loadFromFile(const std::string file, const std::string file2);
 };
 #endif

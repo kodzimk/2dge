@@ -23,13 +23,17 @@ public:
 	bool collision;
 	bool clickedOnTextName;
 	std::string a;
+	sf::Vector2f pos;
 	sf::Text type;
 
 	TileProp(bool collision,int type,sf::Vector2f pos,std::string name);
+	TileProp();
 	~TileProp();
+
 
 	void update(bool isCan,sf::Vector2f ops);
 	void render(sf::RenderWindow* window);
+
 };
 #endif 
 

@@ -9,6 +9,7 @@ GameEngine::GameEngine()
 	this->keytimeMax = 10.f;
 	this->mousePosView = sf::Vector2f();
 	this->path = "game.txt";
+	this->mapEditor->loadFromFile("project.txt","objects.txt");
 }
 
 GameEngine::~GameEngine()

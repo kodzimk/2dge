@@ -70,6 +70,12 @@ void TileMap::render(sf::RenderWindow* window,bool showFirst)
 	}
 }
 
+std::string btos(bool x)
+{
+	if (x)
+		return "1";
+	return "0";
+}
 
 void TileMap::savetoFile(std::string path)
 {
@@ -87,8 +93,9 @@ void TileMap::savetoFile(std::string path)
 			{
 				std::string left = std::to_string(this->tiles[i]->tile.getTextureRect().left);
 				std::string top = std::to_string(this->tiles[i]->tile.getTextureRect().top);
-				std::string collision = std::to_string(this->tiles[i]->collision);
-				file << this->tiles[i]->tile.getPosition().x << " " << this->tiles[i]->tile.getPosition().y<<" "<<left<<" "<<top<<" ";
+				std::string collision = btos(this->tiles[i]->collision);
+
+				file << this->tiles[i]->tile.getPosition().x << " " << this->tiles[i]->tile.getPosition().y<<" "<<left<<" "<<top<<" "<<collision<<" ";
 			}
 
 		}
@@ -139,12 +146,12 @@ void TileMap::loadFromFile(const std::string path)
 		}
          
 		int i = 0;
-		while(file >> x >> y >> left >> top )
+		while(file >> x >> y >> left >> top>>collision )
 		{
 			this->tiles[i]->tile.setTexture(this->tileSheet1);
 			this->tiles[i]->tile.setTextureRect(sf::IntRect(left, top, 64, 64));
 			this->tiles[i]->tile.setPosition(x, y);
-			this->tiles[i]->collision = false;
+			this->tiles[i]->collision = collision;
 			i++;
 		}
 	}

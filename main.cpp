@@ -17,7 +17,6 @@ int main()
 			game->render();
 			if (game->startGame())
 			{
-				game->mapEditor->tileMap->savetoFile("game.txt");
 				game = nullptr;
 				app = new GameApp();
 			}
