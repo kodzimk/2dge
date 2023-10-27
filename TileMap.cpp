@@ -3,7 +3,7 @@
 TileMap::TileMap()
 {
 	this->tileSheet1.loadFromFile("res/Textures/TILESHEET1.png");
-	
+
     sf::Sprite sprite;
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -70,6 +70,7 @@ void TileMap::render(sf::RenderWindow* window,bool showFirst)
 	}
 }
 
+
 void TileMap::savetoFile(std::string path)
 {
 	std::ofstream file;
@@ -82,11 +83,13 @@ void TileMap::savetoFile(std::string path)
 
 		for (size_t i = 0; i < this->tiles.size(); i++)
 		{
-			    file << this->tiles[i]->tile.getGlobalBounds().left<<" " << this->tiles[i]->tile.getGlobalBounds().top << " " << 
-				this->tiles[i]->tile.getGlobalBounds().width << " "<<
-				this->tiles[i]->tile.getGlobalBounds().height << " "<<
-				this->tiles[i]->tile.getPosition().x << " " << this->tiles[i]->tile.getPosition().y << " " <<
-				this->tiles[i]->collision;
+			if (this->tiles[i] != nullptr)
+			{
+				std::string left = std::to_string(this->tiles[i]->tile.getTextureRect().left);
+				std::string top = std::to_string(this->tiles[i]->tile.getTextureRect().top);
+				std::string collision = std::to_string(this->tiles[i]->collision);
+				file << this->tiles[i]->tile.getPosition().x << " " << this->tiles[i]->tile.getPosition().y<<" "<<left<<" "<<top<<" ";
+			}
 
 		}
 	}
@@ -117,7 +120,7 @@ void TileMap::loadFromFile(const std::string path)
 		bool collision = false;
 		file >> size;
 
-		/*if (!this->tiles.empty())
+		if (!this->tiles.empty())
 		{
 			for (int i = 0; i < this->tiles.size(); i++)
 			{
@@ -125,24 +128,24 @@ void TileMap::loadFromFile(const std::string path)
 					delete this->tiles[i];
 			}
 			this->tiles.clear();
-		}*/
+		}
 
-		this->tiles.resize(size);
+
+		this->tiles.resize(size,new Tile());
 
 		for (size_t i = 0; i < size; i++)
 		{
-			this->tiles[i] = NULL;
+			this->tiles[i] = new Tile();
 		}
          
-
-		for (int i = 0; i < size; i++)
+		int i = 0;
+		while(file >> x >> y >> left >> top )
 		{
-			file >> left >> top >> width >> height >> x >> y >> collision;
-
 			this->tiles[i]->tile.setTexture(this->tileSheet1);
-			this->tiles[i]->tile.setTextureRect(sf::IntRect(left, top, width, height));
+			this->tiles[i]->tile.setTextureRect(sf::IntRect(left, top, 64, 64));
 			this->tiles[i]->tile.setPosition(x, y);
-			this->tiles[i]->collision = collision;
+			this->tiles[i]->collision = false;
+			i++;
 		}
 	}
 	else
@@ -151,4 +154,16 @@ void TileMap::loadFromFile(const std::string path)
 	}
 
 	file.close();
+}
+
+void TileMap::renderGame(sf::RenderWindow* window)
+{
+	for (int i = 0; i < this->tiles.size(); i++)
+	{
+		if (this->tiles[i] != nullptr)
+		{
+			this->tiles[i]->render(window);
+		}
+	}
+
 }

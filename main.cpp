@@ -4,14 +4,33 @@
 int main()
 {
 	GameEngine* game;
+	GameApp* app;
 
+	app = nullptr;
 	game = new GameEngine();
 
-	while (game != nullptr)
+	while (game != nullptr || app !=nullptr)
 	{
-		game->update();
-		game->render();
+		if (game != nullptr)
+		{
+			game->update();
+			game->render();
+			if (game->startGame())
+			{
+				game->mapEditor->tileMap->savetoFile("game.txt");
+				game = nullptr;
+				app = new GameApp();
+			}
+		}
+		else
+		{
+			app->render();
+			app->update();
+		}
+
 	}
 
+	delete game;
+	delete app;
 	return 0;
 }

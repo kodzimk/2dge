@@ -17,8 +17,6 @@ public:
 	float keytime;
 	sf::Vector2f mousePosView;
 	float keytimeMax;
-	GameApp* game;
-
 
 	GameEngine();
 	~GameEngine();
@@ -27,7 +25,7 @@ public:
 	void update();
 	void updateKeyTime();
 	const bool getKeyTime();
-	
+	bool startGame();
 };
 
 #endif

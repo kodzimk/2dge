@@ -25,23 +25,9 @@ void GameEngine::render()
 
 void GameEngine::update()
 {
-	if (this->game == nullptr)
-	{
 		this->updateKeyTime();
 		this->mousePosView = sf::Vector2f(sf::Mouse::getPosition(*window));
 		this->mapEditor->update(1.f, this->mousePosView, this->getKeyTime());
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-		{
-			this->mapEditor->tileMap->savetoFile(path);
-			window->close();
-			this->game = new GameApp(path);
-			
-		}
-	}
-	else
-	{
-		this->game->update();
-	}
 }
 
 void GameEngine::updateKeyTime()
@@ -61,5 +47,10 @@ const bool GameEngine::getKeyTime()
 	}
 
 	return false;
+}
+
+bool GameEngine::startGame()
+{
+	return this->mapEditor->startPlay(this->mousePosView);
 }
 

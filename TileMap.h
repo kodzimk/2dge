@@ -21,6 +21,7 @@ public:
 	void render(sf::RenderWindow* window,bool showFirst);
 	void savetoFile(std::string name);
 	void loadFromFile(const std::string name);
+	void renderGame(sf::RenderWindow* window);
 };
 
 

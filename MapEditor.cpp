@@ -12,6 +12,12 @@ MapEditor::MapEditor()
 	this->selectedTile = nullptr;
 	this->objectCount = 0;
 	this->objectLists = new GameObjects();
+
+	this->playText.setFont(this->font);
+	this->playText.setFillColor(sf::Color::White);
+	this->playText.setPosition(960, 30);
+	this->playText.setCharacterSize(40);
+	this->playText.setString("Play");
 }
 
 MapEditor::~MapEditor()
@@ -23,6 +29,7 @@ MapEditor::~MapEditor()
 void MapEditor::render(sf::RenderWindow* window)
 {
 	window->draw(this->backgroundShape);
+	window->draw(this->playText);
 
 	this->tileMap->render(window,this->showFirst);
 
@@ -36,6 +43,8 @@ void MapEditor::render(sf::RenderWindow* window)
 
 	if (this->props.size() > 0)
 		this->objectLists->render(window);
+
+
 }
 
 void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isCan)
@@ -55,6 +64,7 @@ void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isC
 
 void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 {
+
 	if (this->prop != nullptr)
 	{
 		this->prop->update(isCan, mousePosView);
@@ -155,4 +165,13 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 	{	
 		this->selectedTile->tile.setPosition(mousePosView);
 	}
+}
+
+bool MapEditor::startPlay(sf::Vector2f mouse)
+{
+	if (this->playText.getGlobalBounds().contains(mouse) && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+	{
+		return true;
+	}
+	return false;
 }

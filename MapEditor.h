@@ -18,6 +18,7 @@ public:
 	int objectCount;
 	std::vector<TileProp*> props;
 	GameObjects* objectLists;
+	sf::Text playText;
 
 
 	MapEditor();
@@ -26,5 +27,6 @@ public:
 	void render(sf::RenderWindow* window);
 	void update(const float& dt, const sf::Vector2f mousePosView,bool isCan);
 	void updateInputs(const sf::Vector2f mousePosView,bool isCan);
+	bool startPlay(sf::Vector2f mouse);
 };
 #endif

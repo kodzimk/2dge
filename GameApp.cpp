@@ -1,9 +1,10 @@
 #include "GameApp.h"
 
-GameApp::GameApp(std::string name)
+GameApp::GameApp()
 {
 	this->window = new sf::RenderWindow(sf::VideoMode(1920, 1080), "Havoc");
-	this->map->loadFromFile(name);
+	this->map = new TileMap();
+	this->map->loadFromFile("game.txt");
 }
 
 GameApp::~GameApp()
@@ -17,7 +18,7 @@ void GameApp::render()
 	while (true)
 	{
 		window->clear();
-		this->map->render(window, false);
+		this->map->renderGame(window);
 		window->display();
 	}
 }

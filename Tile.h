@@ -12,6 +12,7 @@ public:
 
 
 	Tile(sf::Sprite sp);
+	Tile();
 	~Tile();
 
 	void render(sf::RenderWindow* window);

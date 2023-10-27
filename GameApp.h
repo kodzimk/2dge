@@ -10,7 +10,7 @@ public:
 	sf::RenderWindow* window;
 	TileMap* map;
 
-	GameApp(std::string name);
+	GameApp();
 	~GameApp();
 
 	void render();
