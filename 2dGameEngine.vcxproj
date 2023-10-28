@@ -25,6 +25,7 @@
     <ClCompile Include="includer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MapEditor.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="TileMap.cpp" />
     <ClCompile Include="TileProp.cpp" />
@@ -35,6 +36,7 @@
     <ClInclude Include="GameObjects.h" />
     <ClInclude Include="includer.h" />
     <ClInclude Include="MapEditor.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="TileMap.h" />
     <ClInclude Include="TileProp.h" />

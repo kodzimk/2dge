@@ -20,6 +20,9 @@
     <Filter Include="GUI">
       <UniqueIdentifier>{a85cf493-edb9-4116-974a-1d3b783822cf}</UniqueIdentifier>
     </Filter>
+    <Filter Include="GameEngine\Entity">
+      <UniqueIdentifier>{5677330a-abc4-486f-99f3-dd3db36bc866}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="GameApp.cpp">
@@ -49,6 +52,9 @@
     <ClCompile Include="GameObjects.cpp">
       <Filter>GUI</Filter>
     </ClCompile>
+    <ClCompile Include="Player.cpp">
+      <Filter>GameEngine\Entity</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="GameEngine.h">
@@ -74,6 +80,9 @@
     </ClInclude>
     <ClInclude Include="GameObjects.h">
       <Filter>GUI</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
+      <Filter>GameEngine\Entity</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

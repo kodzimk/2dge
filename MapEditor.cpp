@@ -1,9 +1,12 @@
 #include "MapEditor.h"
 
+int l = 0;
 MapEditor::MapEditor()
 {
 	this->font.loadFromFile("res/Dosis-Light.ttf");
 	this->tileMap = new TileMap();
+
+	this->playerLimit = 1;
 
     this->backgroundShape.setFillColor(sf::Color(100,100, 100, 200));
 	this->backgroundShape.setSize(sf::Vector2f(1200.f, 384.f));
@@ -40,13 +43,17 @@ MapEditor::MapEditor()
 	this->tileMap->loadFromFile("game.txt","upTile.txt");
 	this->showTiles = true;
 	this->showSprites = false;
+	this->player = new Player();
 }
 
 MapEditor::~MapEditor()
 {
 	delete this->tileMap;
 	delete this->selectedTile;
+	delete this->player;
+
 }
+
 
 void MapEditor::render(sf::RenderWindow* window)
 {
@@ -73,6 +80,8 @@ void MapEditor::render(sf::RenderWindow* window)
 
 	if (this->props.size() > 0)
 		this->objectLists->render(window);
+	if (this->showSprites)
+		this->player->render(window);
 
 	window->draw(this->tilesSelect);
 	window->draw(this->playerSelect);
@@ -92,6 +101,7 @@ void MapEditor::update(const float& dt, const sf::Vector2f mousePosView,bool isC
 			this->prop = this->props[a];
 		}
 	}
+	
 }
 
 void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
@@ -108,6 +118,16 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 	{
 		int x = static_cast<int>(mousePosView.x / 64);
 		int y = static_cast<int>(mousePosView.y / 64);
+		for (size_t i = 0; i < this->tileMap->upTiles.size(); i++)
+		{
+			int x1 = static_cast<int>(this->tileMap->upTiles[i]->tile.getPosition().x / 64);
+			int y1 = static_cast<int>(this->tileMap->upTiles[i]->tile.getPosition().y / 64);
+			if (x1 == x && y == y1)
+			{
+				this->prop = this->props[this->tileMap->tiles.size() + i];
+				return;
+			}
+		}
 		for (size_t i = 0; i < this->tileMap->tiles.size(); i++)
 		{
 			int x1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().x / 64);
@@ -122,12 +142,40 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 
 	if (this->selectedTile != nullptr)
 	{
+
+		int x = static_cast<int>(mousePosView.x / 64);
+		int y = static_cast<int>(mousePosView.y / 64);
+		if (this->selectedTile->tile.getTexture() == this->player->player.getTexture() && mousePosView.y < 680.f &&
+			mousePosView.x < 1520.f && mousePosView.x > 400.f && sf::Mouse::isButtonPressed(sf::Mouse::Left))
+		
+		{
+			if (this->playerLimit == 1)
+			{
+				
+				this->tileMap->upTiles.push_back(new Tile(*this->selectedTile));
+				this->tileMap->upTiles[this->tileMap->upTiles.size() - 1]->tile.setPosition(x * 64, y * 64);
+				this->playerLimit--;
+				this->prop = new TileProp(sf::Vector2f(mousePosView.x, mousePosView.y), this->selectedTile->tile.getScale(), "Object:" + std::to_string(objectCount),0.05f);
+				props.push_back(this->prop);
+				sf::Text text;
+				l = this->props.size() - 1;
+
+				text.setFont(this->font);
+				text.setFillColor(sf::Color(255, 255, 255, 255));
+				text.setPosition(50, 25 * (objectCount + 1));
+				text.setCharacterSize(20);
+				text.setString("Object: " + std::to_string(objectCount));
+
+				this->objectLists->namesofobjects.push_back(text);
+				objectCount++;
+			}
+			return;
+		}
+
 		if (mousePosView.y < 680.f && mousePosView.x < 1520.f && mousePosView.x > 400.f &&
 			sf::Mouse::isButtonPressed(sf::Mouse::Left) && isCan && !this->saveGameText.getGlobalBounds().contains(mousePosView))
 		{
-			
-			int x = static_cast<int>(mousePosView.x / 64);
-			int y = static_cast<int>(mousePosView.y / 64);
+		
 
 			if (this->selectedTile->tile.getTextureRect() != sf::IntRect(128, 256, 64, 64) && this->selectedTile->tile.getTextureRect() != sf::IntRect(192,256,64,64)&&
 				this->selectedTile->tile.getTextureRect() != sf::IntRect(512, 576, 64, 64)&&this->selectedTile->tile.getTextureRect() != sf::IntRect(512, 640, 64, 64)&&
@@ -142,11 +190,9 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 					int y1 = static_cast<int>(this->tileMap->tiles[i]->tile.getPosition().y / 64);
 					if (x1 == x && y1 == y)
 					{
-						this->prop = this->props[i];
 						return;
 					}
 				} 
-
 				this->tileMap->tiles.push_back(new Tile(*this->selectedTile));
 				this->tileMap->tiles[this->tileMap->tiles.size() - 1]->tile.setPosition(x * 64, y * 64);
 			}
@@ -154,35 +200,42 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 			{
 				this->tileMap->upTiles.push_back(new Tile(*this->selectedTile));
 				this->tileMap->upTiles[this->tileMap->upTiles.size() - 1]->tile.setPosition(x * 64, y * 64);
+				
 			}
 
 			this->prop = new TileProp(this->selectedTile->collision, this->selectedTile->type, this->selectedTile->tile.getPosition(), "Object:" + std::to_string(objectCount));
 			props.push_back(this->prop);
 			sf::Text text;
 
-			text.setFont(this->font);
-			text.setFillColor(sf::Color(255, 255, 255, 255));
-			text.setPosition(50, 25 * (objectCount + 1));
-			text.setCharacterSize(20);
-			text.setString("Object: " + std::to_string(objectCount));
-
-			this->objectLists->namesofobjects.push_back(text);
-			objectCount++;
+            text.setFont(this->font);
+            text.setFillColor(sf::Color(255, 255, 255, 255));
+            text.setPosition(50, 25 * (objectCount + 1));
+            text.setCharacterSize(20);
+            text.setString("Object: " + std::to_string(objectCount));
+            
+            this->objectLists->namesofobjects.push_back(text);
+            objectCount++;
 		}
 	}
-	
 
 
-	if (sf::Mouse::isButtonPressed(sf::Mouse::Right)&&isCan)
+
+	if (sf::Mouse::isButtonPressed(sf::Mouse::Right) && isCan && mousePosView.y < 680.f && mousePosView.x < 1520.f && mousePosView.x > 400.f)
 	{
 		int index = 0;
 		int x = static_cast<int>(mousePosView.x / 64);
 		int y = static_cast<int>(mousePosView.y / 64);
-		for (auto i = this->tileMap->upTiles.begin(); i !=this->tileMap->upTiles.end(); i++)
+		for (auto i = this->tileMap->upTiles.begin(); i != this->tileMap->upTiles.end(); i++)
 		{
+			
 			if ((*i) != nullptr) {
 				int x1 = static_cast<int>((*i)->tile.getPosition().x / 64);
 				int y1 = static_cast<int>((*i)->tile.getPosition().y / 64);
+				if (x1 == x && y1 == y&&(*i)->tile.getTexture() == this->player->player.getTexture())
+				{
+					this->playerLimit++;
+				}
+
 				if (x1 == x && y1 == y)
 				{
 					this->tileMap->upTiles.erase(i);
@@ -191,7 +244,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 				}
 			}
 		}
-		for (auto i = this->tileMap->tiles.begin();i != this->tileMap->tiles.end();i++,index++)
+		for (auto i = this->tileMap->tiles.begin(); i != this->tileMap->tiles.end(); i++, index++)
 		{
 			if ((*i) != nullptr)
 			{
@@ -207,7 +260,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 		}
 
 		int a = 0;
-		for (auto iter = this->props.begin(); iter != this->props.end(); iter++,a++)
+		for (auto iter = this->props.begin(); iter != this->props.end(); iter++, a++)
 		{
 			if (a == index)
 			{
@@ -226,7 +279,7 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 			}
 		}
 
-	
+
 	}
 
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
@@ -234,23 +287,33 @@ void MapEditor::updateInputs(const sf::Vector2f mousePosView,bool isCan)
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 		this->showFirst = true;
 
-	if (this->showFirst)
+	if (this->showTiles)
 	{
-		for (size_t i = 0; i < this->tileMap->selectSprite.size(); i++)
+		if (this->showFirst)
 		{
-			if (this->tileMap->selectSprite[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				this->selectedTile = new Tile(this->tileMap->selectSprite[i]);	
+			for (size_t i = 0; i < this->tileMap->selectSprite.size(); i++)
+			{
+				if (this->tileMap->selectSprite[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->selectedTile = new Tile(this->tileMap->selectSprite[i]);
+				}
+			}
+		}
+		else
+		{
+			for (size_t i = 0; i < this->tileMap->selectSprite2.size(); i++)
+			{
+				if (this->tileMap->selectSprite2[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+					this->selectedTile = new Tile(this->tileMap->selectSprite2[i]);
+
+				}
 			}
 		}
 	}
 	else
 	{
-		for (size_t i = 0; i < this->tileMap->selectSprite2.size(); i++)
+		if (this->player->player.getGlobalBounds().contains(mousePosView) && isCan && sf::Mouse::isButtonPressed(sf::Mouse::Left))
 		{
-			if (this->tileMap->selectSprite2[i].getGlobalBounds().contains(mousePosView) && sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
-				this->selectedTile = new Tile(this->tileMap->selectSprite2[i]);
-		
-			}
+			this->selectedTile = new Tile(this->player->player);
 		}
 	}
 
@@ -274,25 +337,41 @@ void MapEditor::saveToFile(const std::string file,const std::string file2)
 	std::ofstream file_name;
 
 	file_name.open(file);
-
+	
 	if (file_name.is_open())
 	{
 		file_name << this->props.size()<<"\n";
+		file_name << l << "\n";
 		for (int i = 0; i < this->props.size(); i++)
-		{
-			int a = 0;
-			if (this->props[i]->collision)
-				a = 1;
-			else
-				a = 0;
+		{		
+			if (l != i)
+			{
+				int a = 0;
+				if (this->props[i]->collision)
+					a = 1;
+				else
+					a = 0;
 
-			std::string name = this->props[i]->name.getString();
-			std::string x = std::to_string(this->props[i]->pos.x);
-			std::string y = std::to_string(this->props[i]->pos.y);
+				std::string name = this->props[i]->name.getString();
+				std::string x = std::to_string(this->props[i]->pos.x);
+				std::string y = std::to_string(this->props[i]->pos.y);
 
-			file_name << a << " " << name << " " << x << " " << y <<" ";
-				
+				file_name << a << " " << name << " " << x << " " << y << " ";
+			}			
 		}
+
+		std::string name = this->props[l]->name.getString();
+		std::string x = std::to_string(this->props[l]->pos.x);
+		std::string y = std::to_string(this->props[l]->pos.y);
+		std::string xS = std::to_string(this->props[l]->scale.x);
+		std::string yS = std::to_string(this->props[l]->scale.y);
+		std::string speed = this->props[l]->speedText.getString();
+
+
+		file_name << "\n";
+		file_name << name << " " << x << " " << y << " " << xS << " " << yS << " " << speed;
+		
+		
 
 	}
 	file_name.close();
@@ -302,6 +381,7 @@ void MapEditor::saveToFile(const std::string file,const std::string file2)
 	if (file_name.is_open())
 	{
 		file_name << this->objectLists->namesofobjects.size() << "\n";
+		file_name << this->objectCount << "\n";
 
 		for (int i = 0; i < this->objectLists->namesofobjects.size(); i++)
 		{
@@ -321,12 +401,14 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 	if (file_name.is_open())
 	{
 		int size = 0;
+	
 		std::string name = "";
 		bool collision = false;
 		float x, y;
+		int j = 0;
 
 		file_name >> size;
-
+		file_name >> j;
 		if (!this->props.empty())
 		{
 			for (int i = 0; i < this->props.size(); i++)
@@ -346,6 +428,24 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 			this->props[index] = new TileProp(collision, 0, sf::Vector2f(x, y), name);
 			index++;
 		}
+		
+
+		float xs, ys,speed;
+		while (file_name >> name >> x >> y >> xs >> ys >> speed)
+		{
+			this->props[index] = new TileProp( sf::Vector2f(x, y), sf::Vector2f(xs, ys), name, speed);
+			index++;
+		}
+
+		if (j < size - 1)
+		{
+			int k = index;
+			while (file_name >> collision >> name >> x >> y)
+			{
+				this->props[k] = new TileProp(collision, 0, sf::Vector2f(x, y), name);
+				k++;
+			}
+		}
 
 	}
 	file_name.close();
@@ -357,7 +457,13 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 	{
 		int size = 0;
 		std::string name = "";
+		int objectCount = 0;
+
 		file_name >> size;
+		file_name >> objectCount;
+		this->objectCount = objectCount;
+
+
 		if (!this->objectLists->namesofobjects.empty())
 		{
 			this->objectLists->namesofobjects.clear();

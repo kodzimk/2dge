@@ -3,7 +3,7 @@
 TileMap::TileMap()
 {
 	this->tileSheet1.loadFromFile("res/Textures/TILESHEET1.png");
-
+	this->texture.loadFromFile("res/Textures/PLAYER_SHEET2.png");
     sf::Sprite sprite;
 	for (size_t i = 0; i < 6; i++)
 	{
@@ -179,9 +179,12 @@ void TileMap::loadFromFile(const std::string path, std::string path2)
 		}
          
 		int i = 0;
-		while(file >> x >> y >> left >> top>>collision )
+	
+
+		while(file >> x >> y >> left >> top>>collision)
 		{
-			this->tiles[i]->tile.setTexture(this->tileSheet1);
+				this->tiles[i]->tile.setTexture(this->tileSheet1);
+
 			this->tiles[i]->tile.setTextureRect(sf::IntRect(left, top, 64, 64));
 			this->tiles[i]->tile.setPosition(x, y);
 			this->tiles[i]->collision = collision;
@@ -227,6 +230,9 @@ void TileMap::loadFromFile(const std::string path, std::string path2)
 		int i = 0;
 		while (file >> x >> y >> left >> top >> collision)
 		{
+			if (left == 0 && top == 0)
+				this->upTiles[i]->tile.setTexture(texture);
+			else
 			this->upTiles[i]->tile.setTexture(this->tileSheet1);
 			this->upTiles[i]->tile.setTextureRect(sf::IntRect(left, top, 64, 64));
 			this->upTiles[i]->tile.setPosition(x, y);

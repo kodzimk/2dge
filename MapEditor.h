@@ -5,6 +5,7 @@
 #include"TileMap.h"
 #include"TileProp.h"
 #include"GameObjects.h"
+#include"Player.h"
 
 class MapEditor
 {
@@ -23,6 +24,8 @@ public:
 	sf::Text tilesSelect;
 	sf::Text playerSelect;
 	bool showTiles, showSprites;
+	int playerLimit;
+	Player* player;
 
 	MapEditor();
 	~MapEditor();

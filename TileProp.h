@@ -18,6 +18,8 @@ public:
 	sf::Text inform;
 	sf::Text name;
 	sf::Text collisionText;
+	sf::Text scaleText;
+	sf::Text speedText;
 	sf::Text setTextCollision;
 	sf::Text postext;
 	bool collision;
@@ -25,9 +27,11 @@ public:
 	std::string a;
 	sf::Vector2f pos;
 	sf::Text type;
+	sf::Vector2f scale;
 
 	TileProp(bool collision,int type,sf::Vector2f pos,std::string name);
 	TileProp();
+	TileProp(sf::Vector2f pos,sf::Vector2f scale,std::string name,float speed);
 	~TileProp();
 
 

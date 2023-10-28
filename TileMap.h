@@ -13,6 +13,7 @@ public:
 	std::vector<sf::Sprite>selectSprite;
 	std::vector<sf::Sprite>selectSprite2;
 	std::vector<Tile*> upTiles;
+	sf::Texture texture;
 	sf::Sprite sp;
 	
 
