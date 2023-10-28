@@ -10,7 +10,6 @@ Player::Player()
     this->speed = 0.05f;
     this->scale = this->player.getScale();
     this->animations = 0;
-
 }
 
 Player::~Player()
@@ -58,7 +57,7 @@ void Player::updateAnimations(bool isCan,const float& dt1,std::vector<Tile*> til
 		this->animations += dt * 10.f;
 		if (animations >= 7) animations -= 3;
 		this->player.setTextureRect(sf::IntRect(64 * int(animations), 64, 64, 64));
-		this->player.move(-0.05, 0);
+		this->player.move(-speed, 0);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) && !isCan && this->isCanMove(tiles))
 	{
@@ -68,7 +67,7 @@ void Player::updateAnimations(bool isCan,const float& dt1,std::vector<Tile*> til
 		this->animations += dt * 10.f;
 		if (animations >= 11)animations -= 3;
 		this->player.setTextureRect(sf::IntRect(64 * int(animations), 64, 64, 64));
-		this->player.move(0.05, 0);
+		this->player.move(speed, 0);
 	}
 	if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) && !isCan && this->isCanMove(tiles))
 	{
@@ -76,7 +75,7 @@ void Player::updateAnimations(bool isCan,const float& dt1,std::vector<Tile*> til
 		this->animations += dt * 10.f;
 		if (animations >= 3)animations -= 3;
 		this->player.setTextureRect(sf::IntRect(64 * int(animations), 64, 64, 64));
-		this->player.move(0, 0.05);
+		this->player.move(0, speed);
 	}
 	if (isIdle)
 	{
