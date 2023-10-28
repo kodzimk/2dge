@@ -199,7 +199,7 @@ TileProp::TileProp(sf::Vector2f pos, sf::Vector2f scale, std::string name, float
 	this->name.setFillColor(sf::Color(255, 255, 255, 255));
 	this->name.setPosition(1650, 100);
 	this->name.setCharacterSize(30);
-	this->name.setString("name");
+	this->name.setString(name);
 
 	this->collisionText.setFont(this->font);
 	this->collisionText.setFillColor(sf::Color(255, 255, 255, 255));

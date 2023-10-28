@@ -344,7 +344,7 @@ void MapEditor::saveToFile(const std::string file,const std::string file2)
 		file_name << l << "\n";
 		for (int i = 0; i < this->props.size(); i++)
 		{		
-			if (l != i)
+			if (this->props[i] != nullptr&&l!=i)
 			{
 				int a = 0;
 				if (this->props[i]->collision)
@@ -359,20 +359,7 @@ void MapEditor::saveToFile(const std::string file,const std::string file2)
 				file_name << a << " " << name << " " << x << " " << y << " ";
 			}			
 		}
-
-		std::string name = this->props[l]->name.getString();
-		std::string x = std::to_string(this->props[l]->pos.x);
-		std::string y = std::to_string(this->props[l]->pos.y);
-		std::string xS = std::to_string(this->props[l]->scale.x);
-		std::string yS = std::to_string(this->props[l]->scale.y);
-		std::string speed = this->props[l]->speedText.getString();
-
-
-		file_name << "\n";
-		file_name << name << " " << x << " " << y << " " << xS << " " << yS << " " << speed;
 		
-		
-
 	}
 	file_name.close();
 
@@ -390,12 +377,29 @@ void MapEditor::saveToFile(const std::string file,const std::string file2)
 		}
 	}
 	file_name.close();
+
+	file_name.open("player.txt");
+
+	if (file_name.is_open())
+	{
+		std::string name = this->props[l]->name.getString();
+		std::string x = std::to_string(this->props[l]->pos.x);
+		std::string y = std::to_string(this->props[l]->pos.y);
+		std::string xS = std::to_string(this->props[l]->scale.x);
+		std::string yS = std::to_string(this->props[l]->scale.y);
+		std::string speed = this->props[l]->speedText.getString();
+
+
+		file_name << name << " " << x << " " << y << " " << xS << " " << yS << " " << speed;
+	}
+	file_name.close();
 }
 
 void MapEditor::loadFromFile(const std::string file,const std::string file2)
 {
 	std::ifstream file_name;
 
+	int index = 0;
 	file_name.open(file);
 
 	if (file_name.is_open())
@@ -422,31 +426,11 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 		this->props.resize(size);
 
 
-		int index = 0;
 		while (file_name >> collision >> name >> x >> y)
 		{
 			this->props[index] = new TileProp(collision, 0, sf::Vector2f(x, y), name);
 			index++;
-		}
-		
-
-		float xs, ys,speed;
-		while (file_name >> name >> x >> y >> xs >> ys >> speed)
-		{
-			this->props[index] = new TileProp( sf::Vector2f(x, y), sf::Vector2f(xs, ys), name, speed);
-			index++;
-		}
-
-		if (j < size - 1)
-		{
-			int k = index;
-			while (file_name >> collision >> name >> x >> y)
-			{
-				this->props[k] = new TileProp(collision, 0, sf::Vector2f(x, y), name);
-				k++;
-			}
-		}
-
+		}	
 	}
 	file_name.close();
 
@@ -482,6 +466,19 @@ void MapEditor::loadFromFile(const std::string file,const std::string file2)
 			this->objectLists->namesofobjects.push_back(text);
 			index++;
 		}
+	}
+	file_name.close();
+
+	file_name.open("player.txt");
+	if (file_name.is_open())
+	{
+		std::string name = "";
+		float x, y;
+		float xs, ys, speed;
+
+		file_name >> name >> x >> y >> xs >> ys >> speed;
+
+		this->props[index] = new TileProp(sf::Vector2f(x, y), sf::Vector2f(xs, ys), name, speed);
 	}
 	file_name.close();
 }
